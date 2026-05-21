@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KasirPro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">⊕</span>
+      <span class="logo-text">KasirPro</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="showPage('kasir')">
+        <span class="nav-icon">◈</span> Kasir
+      </button>
+      <button class="nav-btn" onclick="showPage('produk')">
+        <span class="nav-icon">◉</span> Produk
+      </button>
+      <button class="nav-btn" onclick="showPage('laporan')">
+        <span class="nav-icon">◎</span> Laporan
+      </button>
+      <button class="nav-btn" onclick="showPage('pengaturan')">
+        <span class="nav-icon">◌</span> Pengaturan
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- KASIR PAGE -->
+    <div id="page-kasir" class="page active">
+      <div class="page-header">
+        <h1>Point of Sale</h1>
+        <div class="cashier-info">
+          <input type="text" id="cashier-name" placeholder="Nama kasir" value="Kasir">
+        </div>
+      </div>
+      <div class="kasir-layout">
+        <!-- Product grid -->
+        <div class="product-panel">
+          <div class="search-bar">
+            <input type="text" id="search-product" placeholder="Cari produk..." oninput="filterProducts()">
+            <select id="filter-cat" onchange="filterProducts()">
+              <option value="">Semua Kategori</option>
+            </select>
+          </div>
+          <div class="product-grid" id="product-grid"></div>
+        </div>
+        <!-- Cart -->
+        <div class="cart-panel">
+          <div class="cart-header">
+            <span>Keranjang</span>
+            <button class="btn-ghost" onclick="clearCart()">Kosongkan</button>
+          </div>
+          <div class="cart-items" id="cart-items">
+            <div class="cart-empty">Pilih produk untuk mulai</div>
+          </div>
+          <div class="cart-footer">
+            <div class="total-row">
+              <span>Total</span>
+              <span id="cart-total" class="total-amount">Rp 0</span>
+            </div>
+            <div class="payment-methods">
+              <button class="pay-btn active" data-method="Tunai" onclick="selectPayment(this)">💵 Tunai</button>
+              <button class="pay-btn" data-method="QRIS Scan" onclick="selectPayment(this)">📱 QRIS Scan</button>
+              <button class="pay-btn" data-method="QRIS Tampil" onclick="selectPayment(this)">🖥️ QRIS Tampil</button>
+            </div>
+            <div id="cash-input-area" class="cash-input-area">
+              <input type="number" id="cash-paid" placeholder="Jumlah dibayar" oninput="calcChange()">
+              <div class="change-row">
+                <span>Kembalian</span>
+                <span id="change-amount" class="change-amt">Rp 0</span>
+              </div>
+            </div>
+            <button class="btn-pay" onclick="checkout()">Proses Pembayaran</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUK PAGE -->
+    <div id="page-produk" class="page">
+      <div class="page-header">
+        <h1>Manajemen Produk</h1>
+        <button class="btn-primary" onclick="openProductModal()">+ Tambah Produk</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="product-table">
+          <thead>
+            <tr>
+              <th>Nama</th><th>Kategori</th><th>Harga</th>
+              <th>Stok</th><th>Terjual</th><th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LAPORAN PAGE -->
+    <div id="page-laporan" class="page">
+      <div class="page-header">
+        <h1>Laporan Penjualan</h1>
+        <div class="export-btns">
+          <button class="btn-outline" onclick="exportFile('excel')">↓ Excel</button>
+          <button class="btn-outline" onclick="exportFile('word')">↓ Word</button>
+        </div>
+      </div>
+      <div class="summary-cards" id="summary-cards"></div>
+      <div class="report-tabs">
+        <button class="tab-btn active" onclick="showTab('tab-terjual', this)">Terjual</button>
+        <button class="tab-btn" onclick="showTab('tab-tersedia', this)">Tersedia</button>
+        <button class="tab-btn" onclick="showTab('tab-transaksi', this)">Transaksi</button>
+      </div>
+      <div id="tab-terjual" class="tab-content active">
+        <table class="data-table">
+          <thead><tr><th>Produk</th><th>Terjual</th><th>Harga</th><th>Total</th></tr></thead>
+          <tbody id="sold-tbody"></tbody>
+        </table>
+      </div>
+      <div id="tab-tersedia" class="tab-content">
+        <table class="data-table">
+          <thead><tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th></tr></thead>
+          <tbody id="avail-tbody"></tbody>
+        </table>
+      </div>
+      <div id="tab-transaksi" class="tab-content">
+        <table class="data-table">
+          <thead><tr><th>Tanggal</th><th>Kasir</th><th>Metode</th><th>Total</th><th>Dibayar</th><th>Kembalian</th></tr></thead>
+          <tbody id="trx-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PENGATURAN PAGE -->
+    <div id="page-pengaturan" class="page">
+      <div class="page-header"><h1>Pengaturan</h1></div>
+      <div class="settings-card">
+        <h3>QRIS Konfigurasi</h3>
+        <div class="form-group">
+          <label>Nama Merchant</label>
+          <input type="text" id="merchant-name" placeholder="Nama toko Anda">
+        </div>
+        <div class="form-group">
+          <label>Upload Gambar QRIS</label>
+          <input type="file" id="qris-file" accept="image/*" onchange="previewQris()">
+          <div id="qris-preview" class="qris-preview"></div>
+        </div>
+        <button class="btn-primary" onclick="saveQris()">Simpan QRIS</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODALS -->
+<div id="modal-product" class="modal-overlay" onclick="closeModal('modal-product')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-product-title">Tambah Produk</h3>
+      <button onclick="closeModal('modal-product')" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-product-id">
+      <div class="form-group"><label>Nama Produk</label><input type="text" id="prod-name" placeholder="Nama produk"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Harga (Rp)</label><input type="number" id="prod-price" placeholder="0"></div>
+        <div class="form-group"><label>Stok</label><input type="number" id="prod-stock" placeholder="0"></div>
+      </div>
+      <div class="form-group"><label>Kategori</label><input type="text" id="prod-category" placeholder="Umum"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-product')">Batal</button>
+      <button class="btn-primary" onclick="saveProduct()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-payment" class="modal-overlay">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="payment-modal-title">Pembayaran</h3>
+      <button onclick="closeModal('modal-payment')" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="payment-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-payment')">Batal</button>
+      <button class="btn-primary" onclick="confirmPayment()">Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-receipt" class="modal-overlay">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Struk Pembayaran</h3>
+      <button onclick="closeModal('modal-receipt')" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="receipt-body"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="window.print()">Cetak</button>
+      <button class="btn-primary" onclick="closeModal('modal-receipt');clearCart()">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
