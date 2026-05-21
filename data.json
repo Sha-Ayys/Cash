@@ -1,0 +1,75 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Kopi Hitam",
+      "price": 8000,
+      "stock": 48,
+      "category": "Minuman",
+      "sold": 2
+    },
+    {
+      "id": 2,
+      "name": "Teh Manis",
+      "price": 6000,
+      "stock": 50,
+      "category": "Minuman",
+      "sold": 0
+    },
+    {
+      "id": 3,
+      "name": "Nasi Goreng",
+      "price": 20000,
+      "stock": 20,
+      "category": "Makanan",
+      "sold": 0
+    },
+    {
+      "id": 4,
+      "name": "Mie Ayam",
+      "price": 18000,
+      "stock": 20,
+      "category": "Makanan",
+      "sold": 0
+    },
+    {
+      "id": 5,
+      "name": "Es Jeruk",
+      "price": 10000,
+      "stock": 30,
+      "category": "Minuman",
+      "sold": 0
+    },
+    {
+      "id": 6,
+      "name": "Roti Bakar",
+      "price": 12000,
+      "stock": 15,
+      "category": "Makanan",
+      "sold": 0
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1779348769545,
+      "items": [
+        {
+          "id": 1,
+          "name": "Kopi",
+          "price": 8000,
+          "qty": 2
+        }
+      ],
+      "total": 16000,
+      "payment_method": "Tunai",
+      "amount_paid": 20000,
+      "change": 4000,
+      "date": "2026-05-21 07:32:49",
+      "cashier": "Kasir"
+    }
+  ],
+  "qris_config": {
+    "image": "",
+    "merchant_name": "Toko Saya"
+  }
+}
